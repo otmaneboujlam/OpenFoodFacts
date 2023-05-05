@@ -20,8 +20,8 @@ private final static CategorieDAO INSTANCE = new CategorieDAO();
 		EntityManager em = JPAUtils.getInstance().getEntityManager();
 		em.getTransaction().begin();
 		em.persist(categorie);
-		em.getTransaction().commit();
-		em.close();
+		//em.getTransaction().commit();
+		//em.close();
 		
 	}
 }

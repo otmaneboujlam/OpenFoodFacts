@@ -23,7 +23,7 @@ public class ProduitDAO implements IDAO<Produit> {
 		
 	public void create(Produit produit) {
 		EntityManager em = JPAUtils.getInstance().getEntityManager();
-		em.getTransaction().begin();
+		//em.getTransaction().begin();
 		em.persist(produit);
 		em.getTransaction().commit();
 		em.close();
