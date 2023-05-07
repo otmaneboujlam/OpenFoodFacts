@@ -26,7 +26,7 @@ public class ProduitDAO implements IDAO<Produit> {
 		//em.getTransaction().begin();
 		em.persist(produit);
 		em.getTransaction().commit();
-		em.close();
+		//em.close();
 		
 	}
 }

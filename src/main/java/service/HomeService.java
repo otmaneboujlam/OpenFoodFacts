@@ -41,7 +41,7 @@ public class HomeService {
 		return INSTANCE;
 	}
 
-	public List<String> readFile() {
+	private List<String> readFile() {
 		Path path = Paths.get("E:\\Diginamic\\open-food-facts.csv");
 		List<String> lines =null;
 		try {
@@ -52,10 +52,39 @@ public class HomeService {
 		return lines;
 	}
 	
+	private String traitementCasParticulier(String string) {
+		if(string == null || string.isEmpty() || string.isBlank()) {
+			return null;
+		}		
+		string = string.replace("*","");
+		string = string.replace("_","");
+		string = string.replaceAll("\\[0-9]+%", "");
+		string = string.replaceAll("\\s[0-9]+", "");
+		string = string.replaceAll("[0-9]+\\s%", "");
+		string = string.replace("%", "");
+		string = string.replace("en:", "");
+		string = string.replace("EN:", "");
+		string = string.replace("fr:", "");
+		string = string.replace("FR:", "");
+		if(string.contains("(") && string.contains(")")) {
+			string = string.replace(string.substring(string.indexOf("(")+1, string.indexOf(")")), "");
+		}
+		string = string.replace("(","");
+		string = string.replace(")","");
+		string = string.trim();
+		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
+			return string;
+		}
+		return null;
+	}
+	
 	public void loadDataToDB() {
 		List<String> lines = readFile();
 		for(String line : lines) {
 			String[] tableauInfosProduit = line.split("\\|");
+			if(tableauInfosProduit.length>30) {
+				continue;
+			}
 			String tableauInfosTotaleProduit[] = new String[30];
 			for(int i=0;i<tableauInfosProduit.length;i++) {
 				tableauInfosTotaleProduit[i]=tableauInfosProduit[i].trim();
@@ -70,7 +99,7 @@ public class HomeService {
 			
 			String nom = tableauInfosTotaleProduit[2];
 			Boolean presenceHuilePalme =false;
-			if(tableauInfosTotaleProduit[27].equals("1")) {
+			if(tableauInfosTotaleProduit[27]!=null && tableauInfosTotaleProduit[27].equals("1")) {
 				presenceHuilePalme = true;
 			}
 			Float autres[] = new Float[22];
@@ -90,51 +119,70 @@ public class HomeService {
 	
 	private List<Additif> createAdditifsIfNotExist(String string) {
 		List<Additif> additifs = new ArrayList<Additif>();
-		//TODO: ajouter split("-") ...
-		//TODO: voir cas d'exemples dans l'énoncé
-		String[] tableauAdditifs = string.split(",");
-		for(String s : tableauAdditifs) {
-			//TODO : Vérifier si l'objet existe en base de données
-			Additif additif = new Additif();
-			additif.setNom(s.trim());
-			additifDAO.create(additif);
-			additifs.add(additif);
+		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
+			String[] tableauAdditifs = string.split(",|;|\\.");
+			for(int i=0;i<tableauAdditifs.length;i++) {
+				tableauAdditifs[i] = traitementCasParticulier(tableauAdditifs[i]);
+			}
+			for(String s : tableauAdditifs) {
+				//TODO : Vérifier si l'objet existe en base de données
+				if(s != null && !(s.isEmpty()) && !(s.isBlank())) {
+					Additif additif = new Additif();
+					additif.setNom(s);
+					additifDAO.create(additif);
+					additifs.add(additif);
+				}
+			}
 		}
 		return additifs;
 	}
 	
 	private List<Allergene> createAllergenesIfNotExist(String string) {
 		List<Allergene> allergenes = new ArrayList<Allergene>();
-		//TODO: ajouter split("-") ...
-		//TODO: voir cas d'exemples dans l'énoncé
-		String[] tableauAllergenes = string.split(",");
-		for(String s : tableauAllergenes) {
-			//TODO : Vérifier si l'objet existe en base de données
-			Allergene allergene = new Allergene();
-			allergene.setNom(s.trim());
-			allergeneDAO.create(allergene);
-			allergenes.add(allergene);
+		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
+			String[] tableauAllergenes = string.split(",|;|\\.");
+			for(int i=0;i<tableauAllergenes.length;i++) {
+				tableauAllergenes[i] = traitementCasParticulier(tableauAllergenes[i]);
+			}
+			for(String s : tableauAllergenes) {
+				//TODO : Vérifier si l'objet existe en base de données
+				if(s != null && !(s.isEmpty()) && !(s.isBlank())) {
+					Allergene allergene = new Allergene();
+					allergene.setNom(s);
+					allergeneDAO.create(allergene);
+					allergenes.add(allergene);
+				}
+			}
 		}
 		return allergenes;
 	}
 	
 	private List<Ingredient> createIngredientsIfNotExist(String string) {
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
-		//TODO: ajouter split("-") ...
-		//TODO: voir cas d'exemples dans l'énoncé
-		String[] tableauIngredients = string.split(",");
-		for(String s : tableauIngredients) {
-			//TODO : Vérifier si l'objet existe en base de données
-			Ingredient ingredient = new Ingredient();
-			ingredient.setNom(s.trim());
-			ingredientDAO.create(ingredient);
-			ingredients.add(ingredient);
+		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
+			String[] tableauIngredients = string.split(",|-|;|\\.|:");
+			for(int i=0;i<tableauIngredients.length;i++) {
+				tableauIngredients[i] = traitementCasParticulier(tableauIngredients[i]);
+			}
+			
+			for(String s : tableauIngredients) {
+				//TODO : Vérifier si l'objet existe en base de données
+				if(s != null && !(s.isEmpty()) && !(s.isBlank()) && s.length()<256) {
+					Ingredient ingredient = new Ingredient();
+					ingredient.setNom(s);
+					ingredientDAO.create(ingredient);
+					ingredients.add(ingredient);
+				}
+			}
 		}
 		return ingredients;
 	}
 	
 	private ScoreNutritionnel createScoreNutritionnelIfNotExist(String string) {
-		Character key = string.charAt(0);
+		Character key = null;
+		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
+			key = string.charAt(0);
+		}
 		//TODO : Vérifier si l'objet existe en base de données
 		
 		ScoreNutritionnel scoreNutritionnel = null;
@@ -172,20 +220,29 @@ public class HomeService {
 	
 	private List<Marque> createMarquesIfNotExist(String string) {
 		List<Marque> marques = new ArrayList<Marque>();
-		String[] tableauMarques = string.split(",");
-		for(String s : tableauMarques) {
-			//TODO : Vérifier si l'objet existe en base de données
-			Marque marque = new Marque();
-			marque.setNom(s.trim());
-			marqueDAO.create(marque);
-			marques.add(marque);
+		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
+			String[] tableauMarques = string.split(",");
+			for(int i=0;i<tableauMarques.length;i++) {
+				tableauMarques[i] = traitementCasParticulier(tableauMarques[i]);
+			}
+			for(String s : tableauMarques) {
+				//TODO : Vérifier si l'objet existe en base de données
+				if(s != null && !(s.isEmpty()) && !(s.isBlank())) {
+					Marque marque = new Marque();
+					marque.setNom(s.trim());
+					marqueDAO.create(marque);
+					marques.add(marque);
+				}
+			}
 		}
 		return marques;
 	}
 	
 	private Categorie createCategorieIfNotExist(String string) {
+		if(string == null || string.isEmpty() || string.isBlank()) {
+			return null;
+		}
 		//TODO : Vérifier si l'objet existe en base de données
-		
 		Categorie categorie = new Categorie();
 		categorie.setNom(string);
 		categorieDAO.create(categorie);
