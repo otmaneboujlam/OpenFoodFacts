@@ -23,7 +23,6 @@ public class Additif {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String nom;
-	private String code;
 	@ManyToMany(mappedBy = "additifs")
 	private List<Produit> produits;
 	
@@ -39,12 +38,7 @@ public class Additif {
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
-	public String getCode() {
-		return code;
-	}
-	public void setCode(String code) {
-		this.code = code;
-	}
+	
 	public List<Produit> getProduits() {
 		return produits;
 	}

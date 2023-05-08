@@ -21,12 +21,11 @@ import jakarta.persistence.OneToMany;
 @Entity
 public enum ScoreNutritionnel {
 
-	A(1L,'a',"bon"),
+	A(1L,'a',"excellent"),
 	B(2L,'b',"bon"),
-	C(3L,'c',"bon"),
-	D(4L,'d',"bon"),
-	E(5L,'e',"bon"),
-	F(6L,'f',"bon");
+	C(3L,'c',"moyen"),
+	D(4L,'d',"médiocre"),
+	E(5L,'e',"mauvais");
 	
 	@Id
 	private Long id;

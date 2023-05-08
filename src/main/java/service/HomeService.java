@@ -207,10 +207,6 @@ public class HomeService {
 			scoreNutritionnel = ScoreNutritionnel.E;
 			scoreNutritionnelDAO.create(scoreNutritionnel);
 			break;
-		case 'f':
-			scoreNutritionnel = ScoreNutritionnel.F;
-			scoreNutritionnelDAO.create(scoreNutritionnel);
-			break;
 		default:
 			break;
 		}
@@ -260,7 +256,27 @@ public class HomeService {
 		produit.setAllergenes(allergenes);
 		produit.setPresenceHuilePalme(presenceHuilePalme);
 		produit.setEnergie(autres[0]);
-		//TODO : produit.set(autres[1-21]);
+		produit.setGraisse(autres[1]);
+		produit.setSucres(autres[2]);
+		produit.setFibres(autres[3]);
+		produit.setProteines(autres[4]);
+		produit.setSel(autres[5]);
+		produit.setVitA(autres[6]);
+		produit.setVitD(autres[7]);
+		produit.setVitE(autres[8]);
+		produit.setVitK(autres[9]);
+		produit.setVitC(autres[10]);
+		produit.setVitB1(autres[11]);
+		produit.setVitB2(autres[12]);
+		produit.setVitPP(autres[13]);
+		produit.setVitB6(autres[14]);
+		produit.setVitB9(autres[15]);
+		produit.setVitB12(autres[16]);
+		produit.setCalcium(autres[17]);
+		produit.setMagnesium(autres[18]);
+		produit.setIron(autres[19]);
+		produit.setFer(autres[20]);
+		produit.setBetaCarotene(autres[21]);
 		return produit;
 	}
 }
