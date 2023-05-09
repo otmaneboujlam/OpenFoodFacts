@@ -27,10 +27,8 @@ public class JPAUtils {
 		return INSTANCE;
 	}
 
-	// JPA
 	private final static EntityManagerFactory EMF = Persistence.createEntityManagerFactory("FormationJPAPU");
 	private final static EntityManager EM = EMF.createEntityManager();
-	//
 
 	public EntityManager getEntityManager() {
 		return EM;

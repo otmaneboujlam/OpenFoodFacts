@@ -10,8 +10,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 /**
  * @author Otmane
@@ -19,6 +23,10 @@ import jakarta.persistence.OneToMany;
  */
 
 @Entity
+@Table(indexes = {@Index(columnList = "nom")})
+@NamedQueries({
+	@NamedQuery(name = "Categorie.findByName", query = "SELECT m FROM Categorie m WHERE m.nom = :nom")
+})
 public class Categorie {
 
 	@Id

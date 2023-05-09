@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 
 /**
  * @author Otmane
@@ -28,7 +29,7 @@ public class Produit {
 	private String nom;
 	@ManyToMany
 	private List<Ingredient> ingredients = new ArrayList<Ingredient>();
-	@ManyToOne
+	@Enumerated(EnumType.STRING)
 	private ScoreNutritionnel scoreNutritionnel;
 	@ManyToMany
 	private List<Allergene> allergenes = new ArrayList<Allergene>();

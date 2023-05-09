@@ -1,8 +1,10 @@
 package dao;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
+import jakarta.persistence.TypedQuery;
 import model.Allergene;
-import model.Categorie;
 
 public class AllergeneDAO implements IDAO<Allergene>{
 
@@ -18,10 +20,18 @@ private final static AllergeneDAO INSTANCE = new AllergeneDAO();
 		
 	public void create(Allergene allergene) {
 		EntityManager em = JPAUtils.getInstance().getEntityManager();
-		//em.getTransaction().begin();
-		em.persist(allergene);
-		//em.getTransaction().commit();
-		//em.close();
-		
+		em.persist(allergene);		
+	}
+	
+	public Allergene readOne(String nom) {
+		EntityManager em = JPAUtils.getInstance().getEntityManager();
+		TypedQuery<Allergene> findAllergeneByNameQuery = em.createNamedQuery("Allergene.findByName", Allergene.class);
+		findAllergeneByNameQuery.setParameter("nom", nom);
+		Allergene allergene = null;
+		try {
+			allergene = findAllergeneByNameQuery.getSingleResult();
+		} catch (NoResultException | NonUniqueResultException e ) {
+		}
+		return allergene;
 	}
 }

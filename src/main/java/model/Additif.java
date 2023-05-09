@@ -9,7 +9,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 
 /**
  * @author Otmane
@@ -17,6 +21,10 @@ import jakarta.persistence.ManyToMany;
  */
 
 @Entity
+@Table(indexes = {@Index(columnList = "nom")})
+@NamedQueries({
+	@NamedQuery(name = "Additif.findByName", query = "SELECT m FROM Additif m WHERE m.nom = :nom")
+})
 public class Additif {
 
 	@Id

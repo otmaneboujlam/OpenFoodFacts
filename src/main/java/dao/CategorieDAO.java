@@ -1,8 +1,10 @@
 package dao;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
+import jakarta.persistence.TypedQuery;
 import model.Categorie;
-import model.Produit;
 
 public class CategorieDAO implements IDAO<Categorie>{
 
@@ -18,10 +20,18 @@ private final static CategorieDAO INSTANCE = new CategorieDAO();
 		
 	public void create(Categorie categorie) {
 		EntityManager em = JPAUtils.getInstance().getEntityManager();
-		em.getTransaction().begin();
-		em.persist(categorie);
-		//em.getTransaction().commit();
-		//em.close();
-		
+		em.persist(categorie);		
+	}
+	
+	public Categorie readOne(String nom) {
+		EntityManager em = JPAUtils.getInstance().getEntityManager();
+		TypedQuery<Categorie> findCategorieByNameQuery = em.createNamedQuery("Categorie.findByName", Categorie.class);
+		findCategorieByNameQuery.setParameter("nom", nom);
+		Categorie categorie = null;
+		try {
+			categorie = findCategorieByNameQuery.getSingleResult();
+		} catch (NoResultException | NonUniqueResultException e ) {
+		}
+		return categorie;
 	}
 }

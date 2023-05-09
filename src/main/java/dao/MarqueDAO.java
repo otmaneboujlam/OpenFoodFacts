@@ -1,6 +1,9 @@
 package dao;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
+import jakarta.persistence.TypedQuery;
 import model.Marque;
 
 /**
@@ -19,9 +22,19 @@ public class MarqueDAO implements IDAO<Marque> {
 	
 	public void create(Marque marque) {
 		EntityManager em = JPAUtils.getInstance().getEntityManager();
-		//em.getTransaction().begin();
 		em.persist(marque);
-		//em.getTransaction().commit();
-		//em.close();
+	}
+	
+	public Marque readOne(String nom) {
+		EntityManager em = JPAUtils.getInstance().getEntityManager();
+		TypedQuery<Marque> findMarqueByNameQuery = em.createNamedQuery("Marque.findByName", Marque.class);
+		findMarqueByNameQuery.setParameter("nom", nom);
+		Marque marque = null;
+		try {
+			marque = findMarqueByNameQuery.getSingleResult();
+		} catch (NoResultException | NonUniqueResultException e ) {
+			//C'est normal si la marque n'existe pas encore
+		}
+		return marque;
 	}
 }

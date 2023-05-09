@@ -1,6 +1,5 @@
 package dao;
 
-import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import model.Produit;
@@ -23,10 +22,6 @@ public class ProduitDAO implements IDAO<Produit> {
 		
 	public void create(Produit produit) {
 		EntityManager em = JPAUtils.getInstance().getEntityManager();
-		//em.getTransaction().begin();
-		em.persist(produit);
-		em.getTransaction().commit();
-		//em.close();
-		
+		em.persist(produit);		
 	}
 }
