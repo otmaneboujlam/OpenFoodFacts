@@ -59,6 +59,11 @@ public class HomeService {
 		string = string.replaceAll("[0-9]+%", "");
 		string = string.replaceAll("\\s[0-9]+", "");
 		string = string.replaceAll("[0-9]+\\s%", "");
+		string = string.replaceAll("[0-9]+g", "");
+		string = string.replaceAll("[0-9]+\\sg", "");
+		string = string.replaceAll("^[0-9]+", "");
+		string = string.replaceAll("^'", "");
+		string = string.replace("?", "");
 		string = string.replace("%", "");
 		string = string.replace("en:", "");
 		string = string.replace("EN:", "");
@@ -67,8 +72,13 @@ public class HomeService {
 		if(string.contains("(") && string.contains(")")) {
 			string = string.replace(string.substring(string.indexOf("(")+1, string.indexOf(")")), "");
 		}
+		if(string.contains("[") && string.contains("]")) {
+			string = string.replace(string.substring(string.indexOf("[")+1, string.indexOf("]")), "");
+		}
 		string = string.replace("(","");
 		string = string.replace(")","");
+		string = string.replace("[", "");
+		string = string.replace("]", "");
 		string = string.trim();
 		if(string.matches("[0-9]+")) {
 			return null;
@@ -82,11 +92,11 @@ public class HomeService {
 	public void loadDataToDB() {
 		EntityManager em = JPAUtils.getInstance().getEntityManager();
 		List<String> lines = readFile();
-		int cont =0;
+//		int cont =0;
 		for(String line : lines) {
-			if(cont>1000) {
-				break;
-			}
+//			if(cont>1000) {
+//				break;
+//			}
 			String[] tableauInfosProduit = line.split("\\|");
 			if(tableauInfosProduit.length>30) {
 				continue;
@@ -122,7 +132,7 @@ public class HomeService {
 			setProduitAttributs(produit ,categorie,nom,scoreNutritionnel,presenceHuilePalme,autres);
 			produitDAO.create(produit);
 			em.getTransaction().commit();
-			cont++;
+//			cont++;
 		}
 		em.close();
 	}
