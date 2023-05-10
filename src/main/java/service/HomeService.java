@@ -50,11 +50,11 @@ public class HomeService {
 	
 	public void loadDataToDB() {
 		List<String> lines = readFile();
-		int cont =0;
+//		int cont =0;
 		for(String line : lines) {
-			if(cont>2000) {
-				break;
-			}
+//			if(cont>1000) {
+//				break;
+//			}
 			String[] tableauInfosProduit = line.split("\\|");
 			if(tableauInfosProduit.length>30) {
 				continue;
@@ -163,14 +163,16 @@ public class HomeService {
 			}
 			
 			produitDAO.create(produit);
-			cont++;
+//			cont++;
 		}
 	}
 	
 	private String traitementCasParticulierAllergene(String string) {
 		if(!(string.isEmpty())) {
 			string = string.replace("*","")
-					.replace("_","");
+					.replace("_","")
+					.replace(": ", "")
+					.replace("/", "");
 		}
 		return string;
 	}
@@ -202,15 +204,15 @@ public class HomeService {
 			if(string.contains("[") && string.contains("]")) {
 				string = string.replace(string.substring(string.indexOf("[")+1, string.indexOf("]")), "");
 			}
-			string = string.replace("(","");
-			string = string.replace(")","");
-			string = string.replace("[", "");
-			string = string.replace("]", "");
+			string = string.replace("(","")
+					.replace(")","")
+					.replace("[", "")
+					.replace("]", "");
 			if(string.matches("[0-9]+")) {
 				string = "";
 			}
 		}
-		return string;
+		return string.trim();
 	}
 	
 	
@@ -254,7 +256,7 @@ public class HomeService {
 			tableauIngredients[i]=traitementCasParticulierIngredient(tableauIngredients[i].trim());
 		}
 		for(String s : tableauIngredients) {
-			if(!(s.isEmpty()) && s.length()<256) {
+			if(!(s.isEmpty())) {
 				Ingredient ingredient = ingredientDAO.readOneByName(s);
 				if(ingredient==null) {
 					ingredient = new Ingredient();

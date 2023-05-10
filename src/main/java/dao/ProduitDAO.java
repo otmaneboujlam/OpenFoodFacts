@@ -25,4 +25,10 @@ public class ProduitDAO implements IDAO<Produit> {
 		em.persist(produit);	
 		em.getTransaction().commit();
 	}
+
+	@Override
+	public Produit readOneByName(String nom) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
