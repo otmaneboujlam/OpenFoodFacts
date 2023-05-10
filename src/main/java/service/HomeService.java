@@ -5,7 +5,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dao.AdditifDAO;
 import dao.AllergeneDAO;
@@ -22,6 +24,11 @@ import model.Produit;
 import model.ScoreNutritionnel;
 
 public class HomeService {
+	Map<String, Additif> allAdditifs = new HashMap<>();
+	Map<String, Allergene> allAllergenes = new HashMap<>();
+	Map<String, Categorie> allCategories = new HashMap<>();
+	Map<String, Ingredient> allIngredients = new HashMap<>();
+	Map<String, Marque> allMarques = new HashMap<>();
 	
 	private ProduitDAO produitDAO = ProduitDAO.getInstance();
 	private AdditifDAO additifDAO = AdditifDAO.getInstance();
@@ -52,7 +59,7 @@ public class HomeService {
 		List<String> lines = readFile();
 //		int cont =0;
 		for(String line : lines) {
-//			if(cont>1000) {
+//			if(cont>2000) {
 //				break;
 //			}
 			String[] tableauInfosProduit = line.split("\\|");
@@ -66,19 +73,19 @@ public class HomeService {
 				}
 				switch (i) {
 				case 0:
-					produit.setCategorie(createCategorieIfNotExist(tableauInfosProduit[0].trim()));
+					produit.setCategorie(createCategorieIfNotExist(tableauInfosProduit[i].trim()));
 					break;
 				case 1:
-					createMarquesIfNotExist(produit.getMarques() ,tableauInfosProduit[1].trim());
+					createMarquesIfNotExist(produit.getMarques() ,tableauInfosProduit[i].trim());
 					break;
 				case 2 :
-					produit.setNom(tableauInfosProduit[2].trim());
+					produit.setNom(tableauInfosProduit[i].trim());
 					break;
 				case 3:
-					produit.setScoreNutritionnel(createScoreNutritionnel(tableauInfosProduit[3].trim()));
+					produit.setScoreNutritionnel(createScoreNutritionnel(tableauInfosProduit[i].trim()));
 					break;
 				case 4:
-					createIngredientsIfNotExist(produit.getIngredients() ,tableauInfosProduit[4].trim());
+					createIngredientsIfNotExist(produit.getIngredients() ,tableauInfosProduit[i].trim());
 					break;
 				case 5:
 					produit.setEnergie(Float.parseFloat(tableauInfosProduit[i].trim()));
@@ -147,15 +154,15 @@ public class HomeService {
 					produit.setBetaCarotene(Float.parseFloat(tableauInfosProduit[i].trim()));
 					break;
 				case 27:
-					if(tableauInfosProduit[27].trim().equals("1")) {
+					if(tableauInfosProduit[i].trim().equals("1")) {
 						produit.setPresenceHuilePalme(true);
 					}
 					break;
 				case 28:
-					createAllergenesIfNotExist(produit.getAllergenes() ,tableauInfosProduit[28].trim());
+					createAllergenesIfNotExist(produit.getAllergenes() ,tableauInfosProduit[i].trim());
 					break;
 				case 29:
-					createAdditifsIfNotExist(produit.getAdditifs() ,tableauInfosProduit[29].trim());
+					createAdditifsIfNotExist(produit.getAdditifs() ,tableauInfosProduit[i].trim());
 					break;
 				default:
 					break;
@@ -221,11 +228,13 @@ public class HomeService {
 		for(String s : tableauAdditifs) {
 			s=s.trim();
 			if(!(s.isEmpty())) {
-				Additif additif = additifDAO.readOneByName(s);
+				Additif additif = allAdditifs.get(s);
+//				Additif additif = additifDAO.readOneByName(s);
 				if(additif==null) {
 					additif = new Additif();
 					additif.setNom(s);
 					additifDAO.create(additif);
+					allAdditifs.put(s, additif);
 				}
 				additifs.add(additif);
 			}
@@ -239,11 +248,13 @@ public class HomeService {
 		}
 		for(String s : tableauAllergenes) {
 			if(!(s.isEmpty())) {
-				Allergene allergene = allergeneDAO.readOneByName(s);
+				Allergene allergene = allAllergenes.get(s);
+//				Allergene allergene = allergeneDAO.readOneByName(s);
 				if(allergene==null) {
 					allergene = new Allergene();
 					allergene.setNom(s);
 					allergeneDAO.create(allergene);
+					allAllergenes.put(s, allergene);
 				}
 				allergenes.add(allergene);
 			}
@@ -257,11 +268,13 @@ public class HomeService {
 		}
 		for(String s : tableauIngredients) {
 			if(!(s.isEmpty())) {
-				Ingredient ingredient = ingredientDAO.readOneByName(s);
+				Ingredient ingredient = allIngredients.get(s);
+//				Ingredient ingredient = ingredientDAO.readOneByName(s);
 				if(ingredient==null) {
 					ingredient = new Ingredient();
 					ingredient.setNom(s);
 					ingredientDAO.create(ingredient);
+					allIngredients.put(s, ingredient);
 				}
 				ingredients.add(ingredient);
 			}
@@ -292,11 +305,13 @@ public class HomeService {
 		for(String s : tableauMarques) {
 			s=s.trim();
 			if(!(s.isEmpty())) {
-				Marque marque = marqueDAO.readOneByName(s);
+				Marque marque = allMarques.get(s);
+//				Marque marque = marqueDAO.readOneByName(s);
 				if(marque==null) {
 					marque = new Marque();
 					marque.setNom(s);
 					marqueDAO.create(marque);
+					allMarques.put(s, marque);
 				}
 				marques.add(marque);
 			}
@@ -304,11 +319,13 @@ public class HomeService {
 	}
 	
 	private Categorie createCategorieIfNotExist(String string) {
-		Categorie categorie = categorieDAO.readOneByName(string);
+		Categorie categorie = allCategories.get(string);
+//		Categorie categorie = categorieDAO.readOneByName(string);
 		if(categorie==null) {
 			categorie = new Categorie();
 			categorie.setNom(string);
 			categorieDAO.create(categorie);
+			allCategories.put(string, categorie);
 		}
 		return categorie;
 	}
