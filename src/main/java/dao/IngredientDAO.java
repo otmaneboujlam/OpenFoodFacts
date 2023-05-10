@@ -10,6 +10,7 @@ public class IngredientDAO implements IDAO<Ingredient>{
 
 private final static IngredientDAO INSTANCE = new IngredientDAO();
 	
+	EntityManager em = JPAUtils.getInstance().getEntityManager();
 	private IngredientDAO() {
 		
 	}
@@ -19,12 +20,12 @@ private final static IngredientDAO INSTANCE = new IngredientDAO();
 	}
 		
 	public void create(Ingredient ingredient) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
+		em.getTransaction().begin();
 		em.persist(ingredient);		
+		em.getTransaction().commit();
 	}
 	
 	public Ingredient readOne(String nom) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
 		TypedQuery<Ingredient> findIngredientByNameQuery = em.createNamedQuery("Ingredient.findByName", Ingredient.class);
 		findIngredientByNameQuery.setParameter("nom", nom);
 		Ingredient ingredient = null;

@@ -11,7 +11,7 @@ import model.Marque;
  *
  */
 public class MarqueDAO implements IDAO<Marque> {
-
+	EntityManager em = JPAUtils.getInstance().getEntityManager();
 	private final static MarqueDAO INSTANCE = new MarqueDAO();
 	private MarqueDAO() {
 		
@@ -21,12 +21,12 @@ public class MarqueDAO implements IDAO<Marque> {
 	}
 	
 	public void create(Marque marque) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
+		em.getTransaction().begin();
 		em.persist(marque);
+		em.getTransaction().commit();
 	}
 	
 	public Marque readOne(String nom) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
 		TypedQuery<Marque> findMarqueByNameQuery = em.createNamedQuery("Marque.findByName", Marque.class);
 		findMarqueByNameQuery.setParameter("nom", nom);
 		Marque marque = null;

@@ -9,7 +9,8 @@ import model.Categorie;
 public class CategorieDAO implements IDAO<Categorie>{
 
 private final static CategorieDAO INSTANCE = new CategorieDAO();
-	
+
+	EntityManager em = JPAUtils.getInstance().getEntityManager();
 	private CategorieDAO() {
 		
 	}
@@ -19,12 +20,12 @@ private final static CategorieDAO INSTANCE = new CategorieDAO();
 	}
 		
 	public void create(Categorie categorie) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
+		em.getTransaction().begin();
 		em.persist(categorie);		
+		em.getTransaction().commit();
 	}
 	
 	public Categorie readOne(String nom) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
 		TypedQuery<Categorie> findCategorieByNameQuery = em.createNamedQuery("Categorie.findByName", Categorie.class);
 		findCategorieByNameQuery.setParameter("nom", nom);
 		Categorie categorie = null;

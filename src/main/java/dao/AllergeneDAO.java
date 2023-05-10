@@ -9,7 +9,7 @@ import model.Allergene;
 public class AllergeneDAO implements IDAO<Allergene>{
 
 private final static AllergeneDAO INSTANCE = new AllergeneDAO();
-	
+	EntityManager em = JPAUtils.getInstance().getEntityManager();
 	private AllergeneDAO() {
 		
 	}
@@ -19,12 +19,12 @@ private final static AllergeneDAO INSTANCE = new AllergeneDAO();
 	}
 		
 	public void create(Allergene allergene) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
+		em.getTransaction().begin();
 		em.persist(allergene);		
+		em.getTransaction().commit();
 	}
 	
 	public Allergene readOne(String nom) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
 		TypedQuery<Allergene> findAllergeneByNameQuery = em.createNamedQuery("Allergene.findByName", Allergene.class);
 		findAllergeneByNameQuery.setParameter("nom", nom);
 		Allergene allergene = null;

@@ -9,7 +9,8 @@ import model.Additif;
 public class AdditifDAO implements IDAO<Additif> {
 
 private final static AdditifDAO INSTANCE = new AdditifDAO();
-	
+
+	EntityManager em = JPAUtils.getInstance().getEntityManager();
 	private AdditifDAO() {
 		
 	}
@@ -19,12 +20,13 @@ private final static AdditifDAO INSTANCE = new AdditifDAO();
 	}
 		
 	public void create(Additif additif) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
-		em.persist(additif);		
+		em.getTransaction().begin();
+		em.persist(additif);
+		em.getTransaction().commit();
 	}
 	
 	public Additif readOne(String nom) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
+		
 		TypedQuery<Additif> findAdditifByNameQuery = em.createNamedQuery("Additif.findByName", Additif.class);
 		findAdditifByNameQuery.setParameter("nom", nom);
 		Additif additif = null;

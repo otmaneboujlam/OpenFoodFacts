@@ -9,7 +9,7 @@ import model.Produit;
  *
  */
 public class ProduitDAO implements IDAO<Produit> {
-	
+	EntityManager em = JPAUtils.getInstance().getEntityManager();
 	private final static ProduitDAO INSTANCE = new ProduitDAO();
 	
 	private ProduitDAO() {
@@ -21,7 +21,8 @@ public class ProduitDAO implements IDAO<Produit> {
 	}
 		
 	public void create(Produit produit) {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
-		em.persist(produit);		
+		em.getTransaction().begin();
+		em.persist(produit);	
+		em.getTransaction().commit();
 	}
 }

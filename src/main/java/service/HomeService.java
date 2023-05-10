@@ -11,10 +11,8 @@ import dao.AdditifDAO;
 import dao.AllergeneDAO;
 import dao.CategorieDAO;
 import dao.IngredientDAO;
-import dao.JPAUtils;
 import dao.MarqueDAO;
 import dao.ProduitDAO;
-import jakarta.persistence.EntityManager;
 import model.Additif;
 import model.Allergene;
 import model.Categorie;
@@ -50,53 +48,54 @@ public class HomeService {
 		return lines;
 	}
 	
-	private String traitementCasParticulier(String string) {
-		if(string == null || string.isEmpty() || string.isBlank()) {
-			return null;
-		}		
-		string = string.replace("*","");
-		string = string.replace("_","");
-		string = string.replaceAll("[0-9]+%", "");
-		string = string.replaceAll("\\s[0-9]+", "");
-		string = string.replaceAll("[0-9]+\\s%", "");
-		string = string.replaceAll("[0-9]+g", "");
-		string = string.replaceAll("[0-9]+\\sg", "");
-		string = string.replaceAll("^[0-9]+", "");
-		string = string.replaceAll("^'", "");
-		string = string.replace("?", "");
-		string = string.replace("%", "");
-		string = string.replace("en:", "");
-		string = string.replace("EN:", "");
-		string = string.replace("fr:", "");
-		string = string.replace("FR:", "");
-		if(string.contains("(") && string.contains(")")) {
-			string = string.replace(string.substring(string.indexOf("(")+1, string.indexOf(")")), "");
+	private String traitementCasParticulierAllergene(String string) {
+		if(!(string.isEmpty())) {
+			string = string.replace("*","")
+					.replace("_","");
 		}
-		if(string.contains("[") && string.contains("]")) {
-			string = string.replace(string.substring(string.indexOf("[")+1, string.indexOf("]")), "");
+		return string;
+	}
+	
+	private String traitementCasParticulierIngredient(String string) {
+		if(!(string.isEmpty())) {
+			string = string.replace("*","")
+					.replace("_","")
+					.replaceAll("[0-9]+%", "")
+					.replaceAll("\\s[0-9]+", "")
+					.replaceAll("[0-9]+\\s%", "")
+					.replaceAll("[0-9]+g", "")
+					.replaceAll("[0-9]+\\sg", "")
+					.replaceAll("^[0-9]+", "")
+					.replace("?", "")
+					.replace("%", "")
+					.replace("en:", "")
+					.replace("EN:", "")
+					.replace("fr:", "")
+					.replace("FR:", "");
+			if(string.contains("(") && string.contains(")")) {
+				string = string.replace(string.substring(string.indexOf("(")+1, string.indexOf(")")), "");
+			}
+			if(string.contains("[") && string.contains("]")) {
+				string = string.replace(string.substring(string.indexOf("[")+1, string.indexOf("]")), "");
+			}
+			string = string.replace("(","");
+			string = string.replace(")","");
+			string = string.replace("[", "");
+			string = string.replace("]", "");
+			if(string.matches("[0-9]+")) {
+				string = "";
+			}
 		}
-		string = string.replace("(","");
-		string = string.replace(")","");
-		string = string.replace("[", "");
-		string = string.replace("]", "");
-		string = string.trim();
-		if(string.matches("[0-9]+")) {
-			return null;
-		}
-		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
-			return string;
-		}
-		return null;
+		return string;
 	}
 	
 	public void loadDataToDB() {
-		EntityManager em = JPAUtils.getInstance().getEntityManager();
 		List<String> lines = readFile();
-//		int cont =0;
+		int cont =0;
 		for(String line : lines) {
-//			if(cont>1000) {
-//				break;
-//			}
+			if(cont>4000) {
+				break;
+			}
 			String[] tableauInfosProduit = line.split("\\|");
 			if(tableauInfosProduit.length>30) {
 				continue;
@@ -105,7 +104,6 @@ public class HomeService {
 			for(int i=0;i<tableauInfosProduit.length;i++) {
 				tableauInfosTotaleProduit[i]=tableauInfosProduit[i].trim();
 			}
-			em.getTransaction().begin();
 			Produit produit = new Produit();
 			Categorie categorie = createCategorieIfNotExist(tableauInfosTotaleProduit[0]);
 			createMarquesIfNotExist(produit.getMarques() ,tableauInfosTotaleProduit[1]);
@@ -131,20 +129,16 @@ public class HomeService {
 			
 			setProduitAttributs(produit ,categorie,nom,scoreNutritionnel,presenceHuilePalme,autres);
 			produitDAO.create(produit);
-			em.getTransaction().commit();
-//			cont++;
+			cont++;
 		}
-		em.close();
 	}
 	
 	private void createAdditifsIfNotExist(List<Additif> additifs ,String string) {
-		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
+		if(string != null && !(string.isEmpty())) {
 			String[] tableauAdditifs = string.split(",|;|\\.");
-			for(int i=0;i<tableauAdditifs.length;i++) {
-				tableauAdditifs[i] = traitementCasParticulier(tableauAdditifs[i]);
-			}
 			for(String s : tableauAdditifs) {
-				if(s != null && !(s.isEmpty()) && !(s.isBlank())) {
+				s=s.trim();
+				if(!(s.isEmpty())) {
 					Additif additifDB = additifDAO.readOne(s);
 					if(additifDB!=null) {
 						additifs.add(additifDB);
@@ -161,13 +155,13 @@ public class HomeService {
 	}
 	
 	private void createAllergenesIfNotExist(List<Allergene> allergenes ,String string) {
-		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
+		if(string != null && !(string.isEmpty())) {
 			String[] tableauAllergenes = string.split(",|;|\\.");
 			for(int i=0;i<tableauAllergenes.length;i++) {
-				tableauAllergenes[i] = traitementCasParticulier(tableauAllergenes[i]);
+				tableauAllergenes[i]=traitementCasParticulierAllergene(tableauAllergenes[i].trim());
 			}
 			for(String s : tableauAllergenes) {
-				if(s != null && !(s.isEmpty()) && !(s.isBlank())) {
+				if(!(s.isEmpty())) {
 					Allergene allergeneDB = allergeneDAO.readOne(s);
 					if(allergeneDB!=null) {
 						allergenes.add(allergeneDB);
@@ -184,14 +178,14 @@ public class HomeService {
 	}
 	
 	private void createIngredientsIfNotExist(List<Ingredient> ingredients ,String string) {
-		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
+		if(!(string.isEmpty())) {
 			String[] tableauIngredients = string.split(",|-|;|\\.|:");
 			for(int i=0;i<tableauIngredients.length;i++) {
-				tableauIngredients[i] = traitementCasParticulier(tableauIngredients[i]);
+				tableauIngredients[i]=traitementCasParticulierIngredient(tableauIngredients[i].trim());
 			}
 			
 			for(String s : tableauIngredients) {
-				if(s != null && !(s.isEmpty()) && !(s.isBlank()) && s.length()<256) {
+				if(!(s.isEmpty()) && s.length()<256) {
 					Ingredient ingredientDB = ingredientDAO.readOne(s);
 					if(ingredientDB!=null) {
 						ingredients.add(ingredientDB);
@@ -239,13 +233,11 @@ public class HomeService {
 	}
 	
 	private void createMarquesIfNotExist(List<Marque> marques ,String string) {
-		if(string != null && !(string.isEmpty()) && !(string.isBlank())) {
+		if(!(string.isEmpty())) {
 			String[] tableauMarques = string.split(",");
-			for(int i=0;i<tableauMarques.length;i++) {
-				tableauMarques[i] = traitementCasParticulier(tableauMarques[i]);
-			}
 			for(String s : tableauMarques) {
-				if(s != null && !(s.isEmpty()) && !(s.isBlank())) {
+				s=s.trim();
+				if(!(s.isEmpty())) {
 					Marque marqueDB = marqueDAO.readOne(s);
 					if(marqueDB!=null) {
 						marques.add(marqueDB);
@@ -262,7 +254,7 @@ public class HomeService {
 	}
 	
 	private Categorie createCategorieIfNotExist(String string) {
-		if(string == null || string.isEmpty() || string.isBlank()) {
+		if(string == null || string.isEmpty()) {
 			return null;
 		}
 		Categorie categorieDB = categorieDAO.readOne(string);
