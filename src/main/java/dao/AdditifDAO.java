@@ -25,7 +25,7 @@ private final static AdditifDAO INSTANCE = new AdditifDAO();
 		em.getTransaction().commit();
 	}
 	
-	public Additif readOne(String nom) {
+	public Additif readOneByName(String nom) {
 		
 		TypedQuery<Additif> findAdditifByNameQuery = em.createNamedQuery("Additif.findByName", Additif.class);
 		findAdditifByNameQuery.setParameter("nom", nom);

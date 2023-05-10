@@ -24,7 +24,7 @@ private final static AllergeneDAO INSTANCE = new AllergeneDAO();
 		em.getTransaction().commit();
 	}
 	
-	public Allergene readOne(String nom) {
+	public Allergene readOneByName(String nom) {
 		TypedQuery<Allergene> findAllergeneByNameQuery = em.createNamedQuery("Allergene.findByName", Allergene.class);
 		findAllergeneByNameQuery.setParameter("nom", nom);
 		Allergene allergene = null;

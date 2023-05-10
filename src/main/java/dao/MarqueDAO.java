@@ -26,7 +26,7 @@ public class MarqueDAO implements IDAO<Marque> {
 		em.getTransaction().commit();
 	}
 	
-	public Marque readOne(String nom) {
+	public Marque readOneByName(String nom) {
 		TypedQuery<Marque> findMarqueByNameQuery = em.createNamedQuery("Marque.findByName", Marque.class);
 		findMarqueByNameQuery.setParameter("nom", nom);
 		Marque marque = null;

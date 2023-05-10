@@ -25,7 +25,7 @@ private final static IngredientDAO INSTANCE = new IngredientDAO();
 		em.getTransaction().commit();
 	}
 	
-	public Ingredient readOne(String nom) {
+	public Ingredient readOneByName(String nom) {
 		TypedQuery<Ingredient> findIngredientByNameQuery = em.createNamedQuery("Ingredient.findByName", Ingredient.class);
 		findIngredientByNameQuery.setParameter("nom", nom);
 		Ingredient ingredient = null;

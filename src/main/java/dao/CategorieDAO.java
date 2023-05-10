@@ -25,7 +25,7 @@ private final static CategorieDAO INSTANCE = new CategorieDAO();
 		em.getTransaction().commit();
 	}
 	
-	public Categorie readOne(String nom) {
+	public Categorie readOneByName(String nom) {
 		TypedQuery<Categorie> findCategorieByNameQuery = em.createNamedQuery("Categorie.findByName", Categorie.class);
 		findCategorieByNameQuery.setParameter("nom", nom);
 		Categorie categorie = null;
