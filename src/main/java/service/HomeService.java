@@ -180,12 +180,12 @@ public class HomeService {
 		if(!(string.isEmpty())) {
 			string = string.replace("*","")
 					.replace("_","")
-					.replace(": ", "")
 					.replace("/", "")
 					.replace("en:", "")
 					.replace("EN:", "")
 					.replace("fr:", "")
-					.replace("FR:", "");
+					.replace("FR:", "")
+					.replace(": ", "");
 		}
 		return string;
 	}
