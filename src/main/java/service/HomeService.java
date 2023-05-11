@@ -181,7 +181,11 @@ public class HomeService {
 			string = string.replace("*","")
 					.replace("_","")
 					.replace(": ", "")
-					.replace("/", "");
+					.replace("/", "")
+					.replace("en:", "")
+					.replace("EN:", "")
+					.replace("fr:", "")
+					.replace("FR:", "");
 		}
 		return string;
 	}
