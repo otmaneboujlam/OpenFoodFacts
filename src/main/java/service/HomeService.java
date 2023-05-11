@@ -222,6 +222,8 @@ public class HomeService {
 					.replace(")","")
 					.replace("[", "")
 					.replace("]", "")
+					.replace("°", "")
+					.replace("/", "")
 					.trim();
 			if(string.matches("[0-9]+")) {
 				string = "";
