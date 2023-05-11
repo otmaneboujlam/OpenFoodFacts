@@ -270,7 +270,7 @@ public class HomeService {
 	}
 	
 	private void createIngredientsIfNotExist(List<Ingredient> ingredients ,String string) {
-		String[] tableauIngredients = string.split(",|-|;|\\.|:");
+		String[] tableauIngredients = string.split(",|-|;|\\.|:| et ");
 		for(int i=0;i<tableauIngredients.length;i++) {
 			tableauIngredients[i]=traitementCasParticulierIngredient(tableauIngredients[i].trim());
 		}
