@@ -13,6 +13,7 @@ import dao.AdditifDAO;
 import dao.AllergeneDAO;
 import dao.CategorieDAO;
 import dao.IngredientDAO;
+import dao.JPAUtils;
 import dao.MarqueDAO;
 import dao.ProduitDAO;
 import model.Additif;
@@ -24,11 +25,11 @@ import model.Produit;
 import model.ScoreNutritionnel;
 
 public class HomeService {
-	Map<String, Additif> allAdditifs = new HashMap<>();
-	Map<String, Allergene> allAllergenes = new HashMap<>();
-	Map<String, Categorie> allCategories = new HashMap<>();
-	Map<String, Ingredient> allIngredients = new HashMap<>();
-	Map<String, Marque> allMarques = new HashMap<>();
+//	Map<String, Additif> allAdditifs = new HashMap<>();
+//	Map<String, Allergene> allAllergenes = new HashMap<>();
+//	Map<String, Categorie> allCategories = new HashMap<>();
+//	Map<String, Ingredient> allIngredients = new HashMap<>();
+//	Map<String, Marque> allMarques = new HashMap<>();
 	
 	private ProduitDAO produitDAO = ProduitDAO.getInstance();
 	private AdditifDAO additifDAO = AdditifDAO.getInstance();
@@ -172,6 +173,7 @@ public class HomeService {
 			produitDAO.create(produit);
 //			cont++;
 		}
+		JPAUtils.getInstance().close();
 	}
 	
 	private String traitementCasParticulierAllergene(String string) {
@@ -186,6 +188,12 @@ public class HomeService {
 	
 	private String traitementCasParticulierIngredient(String string) {
 		if(!(string.isEmpty())) {
+			if(string.contains("(") && string.contains(")")) {
+				string = string.replace(string.substring(string.indexOf("(")+1, string.indexOf(")")), "");
+			}
+			if(string.contains("[") && string.contains("]")) {
+				string = string.replace(string.substring(string.indexOf("[")+1, string.indexOf("]")), "");
+			}
 			string = string.replace("*","")
 					.replace("_","")
 					.replaceAll("[0-9]+%", "")
@@ -205,21 +213,16 @@ public class HomeService {
 					.replace("EN:", "")
 					.replace("fr:", "")
 					.replace("FR:", "");
-			if(string.contains("(") && string.contains(")")) {
-				string = string.replace(string.substring(string.indexOf("(")+1, string.indexOf(")")), "");
-			}
-			if(string.contains("[") && string.contains("]")) {
-				string = string.replace(string.substring(string.indexOf("[")+1, string.indexOf("]")), "");
-			}
 			string = string.replace("(","")
 					.replace(")","")
 					.replace("[", "")
-					.replace("]", "");
+					.replace("]", "")
+					.trim();
 			if(string.matches("[0-9]+")) {
 				string = "";
 			}
 		}
-		return string.trim();
+		return string;
 	}
 	
 	
@@ -228,13 +231,13 @@ public class HomeService {
 		for(String s : tableauAdditifs) {
 			s=s.trim();
 			if(!(s.isEmpty())) {
-				Additif additif = allAdditifs.get(s);
-//				Additif additif = additifDAO.readOneByName(s);
+//				Additif additif = allAdditifs.get(s);
+				Additif additif = additifDAO.readOneByName(s);
 				if(additif==null) {
 					additif = new Additif();
 					additif.setNom(s);
 					additifDAO.create(additif);
-					allAdditifs.put(s, additif);
+//					allAdditifs.put(s, additif);
 				}
 				additifs.add(additif);
 			}
@@ -248,13 +251,13 @@ public class HomeService {
 		}
 		for(String s : tableauAllergenes) {
 			if(!(s.isEmpty())) {
-				Allergene allergene = allAllergenes.get(s);
-//				Allergene allergene = allergeneDAO.readOneByName(s);
+//				Allergene allergene = allAllergenes.get(s);
+				Allergene allergene = allergeneDAO.readOneByName(s);
 				if(allergene==null) {
 					allergene = new Allergene();
 					allergene.setNom(s);
 					allergeneDAO.create(allergene);
-					allAllergenes.put(s, allergene);
+//					allAllergenes.put(s, allergene);
 				}
 				allergenes.add(allergene);
 			}
@@ -268,13 +271,13 @@ public class HomeService {
 		}
 		for(String s : tableauIngredients) {
 			if(!(s.isEmpty())) {
-				Ingredient ingredient = allIngredients.get(s);
-//				Ingredient ingredient = ingredientDAO.readOneByName(s);
+//				Ingredient ingredient = allIngredients.get(s);
+				Ingredient ingredient = ingredientDAO.readOneByName(s);
 				if(ingredient==null) {
 					ingredient = new Ingredient();
 					ingredient.setNom(s);
 					ingredientDAO.create(ingredient);
-					allIngredients.put(s, ingredient);
+//					allIngredients.put(s, ingredient);
 				}
 				ingredients.add(ingredient);
 			}
@@ -305,13 +308,13 @@ public class HomeService {
 		for(String s : tableauMarques) {
 			s=s.trim();
 			if(!(s.isEmpty())) {
-				Marque marque = allMarques.get(s);
-//				Marque marque = marqueDAO.readOneByName(s);
+//				Marque marque = allMarques.get(s);
+				Marque marque = marqueDAO.readOneByName(s);
 				if(marque==null) {
 					marque = new Marque();
 					marque.setNom(s);
 					marqueDAO.create(marque);
-					allMarques.put(s, marque);
+//					allMarques.put(s, marque);
 				}
 				marques.add(marque);
 			}
@@ -319,13 +322,13 @@ public class HomeService {
 	}
 	
 	private Categorie createCategorieIfNotExist(String string) {
-		Categorie categorie = allCategories.get(string);
-//		Categorie categorie = categorieDAO.readOneByName(string);
+//		Categorie categorie = allCategories.get(string);
+		Categorie categorie = categorieDAO.readOneByName(string);
 		if(categorie==null) {
 			categorie = new Categorie();
 			categorie.setNom(string);
 			categorieDAO.create(categorie);
-			allCategories.put(string, categorie);
+//			allCategories.put(string, categorie);
 		}
 		return categorie;
 	}
