@@ -185,7 +185,8 @@ public class HomeService {
 					.replace("EN:", "")
 					.replace("fr:", "")
 					.replace("FR:", "")
-					.replace(": ", "");
+					.replace(": ", "")
+					.trim();
 		}
 		return string;
 	}
@@ -216,8 +217,8 @@ public class HomeService {
 					.replace("en:", "")
 					.replace("EN:", "")
 					.replace("fr:", "")
-					.replace("FR:", "");
-			string = string.replace("(","")
+					.replace("FR:", "")
+					.replace("(","")
 					.replace(")","")
 					.replace("[", "")
 					.replace("]", "")
