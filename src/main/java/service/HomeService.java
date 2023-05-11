@@ -201,17 +201,10 @@ public class HomeService {
 			}
 			string = string.replace("*","")
 					.replace("_","")
-					.replaceAll("[0-9]+%", "")
-					.replaceAll("\\s[0-9]+", "")
-					.replaceAll("[0-9]+\\s%", "")
-					.replaceAll("[0-9]+g", "")
-					.replaceAll("[0-9]+\\sg", "")
-					.replaceAll("^[0-9]+", "")
 					.replace("{", "")
 					.replace("}", "")
 					.replace("+", "")
 					.replace("—", "")
-					.replaceAll("^'", "")
 					.replace("?", "")
 					.replace("%", "")
 					.replace("en:", "")
@@ -224,6 +217,15 @@ public class HomeService {
 					.replace("]", "")
 					.replace("°", "")
 					.replace("/", "")
+					.replace("\\", "")
+					.replace("!", "")
+					.replaceAll("[0-9]+%", "")
+					.replaceAll("\\s[0-9]+", "")
+					.replaceAll("[0-9]+\\s%", "")
+					.replaceAll("[0-9]+g", "")
+					.replaceAll("[0-9]+\\sg", "")
+					.replaceAll("^[0-9]+", "")
+					.replaceAll("^'", "")
 					.trim();
 			if(string.matches("[0-9]+")) {
 				string = "";
